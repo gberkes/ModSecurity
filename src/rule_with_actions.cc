@@ -121,8 +121,8 @@ RuleWithActions::RuleWithActions(
                     m_actionsRuntimePos.push_back(a);
                 }
             } else {
+                delete(a);
                 assert(false && "The handling of RunTimeBeforeMatchAttemptKind has not been implemented yet.");
-                ((void)0);
             }
         }
         delete actions;
