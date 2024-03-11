@@ -121,6 +121,7 @@ RuleWithActions::RuleWithActions(
                     m_actionsRuntimePos.push_back(a);
                 }
             } else {
+                assert(false && "The handling of RunTimeBeforeMatchAttemptKind has not been implemented yet.");
                 delete(a);
                 std::cout << "General failure, action: " << a->m_name;
                 std::cout << " has an unknown type." << std::endl;
