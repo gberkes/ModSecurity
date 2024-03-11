@@ -121,7 +121,7 @@ RuleWithActions::RuleWithActions(
                     m_actionsRuntimePos.push_back(a);
                 }
             } else {
-                delete a;
+                delete(a);
                 std::cout << "General failure, action: " << a->m_name;
                 std::cout << " has an unknown type." << std::endl;
                 throw;
