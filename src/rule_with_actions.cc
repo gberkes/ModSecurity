@@ -123,6 +123,7 @@ RuleWithActions::RuleWithActions(
                 }
             } else {
                 assert(false && "The handling of RunTimeBeforeMatchAttemptKind has not been implemented yet.");
+                throw;
                 ((void)0); // No operation
             }
         }
