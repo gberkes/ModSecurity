@@ -65,7 +65,7 @@ cppcheck:
 		-I headers -I . -I others -I src -I others/mbedtls -I src/parser \
 		--error-exitcode=1 \
 		-i "src/parser/seclang-parser.cc" -i "src/parser/seclang-scanner.cc" \
-		--force --verbose . --file-filter=*rule_*.cc
+		--force --verbose .
 
 
 check-static: cppcheck
