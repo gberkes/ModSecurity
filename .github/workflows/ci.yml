@@ -13,7 +13,7 @@ jobs:
         platform: [x64]
         compiler: [gcc]
         configure:
-          - {label: "with pcre2",  opt: "--with-pcre2" }
+          - {label: "with pcre2, enable-assertions",  opt: "--with-pcre2 --enable-assertions=yes" }
     steps:
       - name: Setup Dependencies
         run: |
