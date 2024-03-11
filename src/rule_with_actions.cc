@@ -24,7 +24,6 @@
 #include <list>
 #include <utility>
 #include <memory>
-#include <cassert>
 
 #include "modsecurity/rules_set.h"
 #include "src/operators/operator.h"
