@@ -309,7 +309,11 @@ class TransactionSecMarkerManagement {
 
     std::shared_ptr<std::string> getCurrentMarker() const {
       assert((m_marker != nullptr) && "You might have forgotten to call and evaluate isInsideAMarker() before calling getCurrentMarker().");
-        return m_marker;
+      if(m_marker != nullptr) {
+          return m_marker;
+      } else {
+          throw;
+      }
     }
 
     void removeMarker() {
