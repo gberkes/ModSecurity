@@ -166,14 +166,12 @@ std::list<std::string> expandEnv(const std::string& var, int flags) {
 #else
     wordexp_t p;
     flags = flags | WRDE_NOCMD;
-    if (wordexp(var.c_str(), &p, flags) == false) {
-        if (p.we_wordc) {
-            for (char** exp = p.we_wordv; *exp; ++exp) {
+    if ((wordexp(var.c_str(), &p, flags) == false) && p.we_wordc) {
+        for (char** exp = p.we_wordv; *exp; ++exp) {
 #endif
-                auto iss = std::ifstream(exp[0], std::ios::in);
-                if (iss.is_open())
-                    vars.push_back(exp[0]);
-            }
+            auto iss = std::ifstream(exp[0], std::ios::in);
+            if (iss.is_open())
+                vars.push_back(exp[0]);
         }
 #ifdef WIN32
 #elif defined(__OpenBSD__)
