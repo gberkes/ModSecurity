@@ -146,17 +146,15 @@ CHECK_LIBXML2
 
 
 #
-# Check for pcre2
-#
-if test "x${with_pcre}" = "x" -o "x${with_pcre}" = "xno"; then
-    PCRE2_MANDATORY=yes
-    PROG_PCRE2
-elif test "x$PCRE2_FOUND" != "x1" -o "x${with_pcre2}" = "x" -o "x${with_pcre2}" = "xno"; then
-#
 # Check for libpcre
 #
-    CHECK_PCRE
-fi
+CHECK_PCRE
+
+
+#
+# Check for pcre2
+#
+PROG_PCRE2
 AM_CONDITIONAL([PCRE2_CFLAGS], [test "PCRE2_CFLAGS" != ""])
 
 
