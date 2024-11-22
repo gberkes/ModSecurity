@@ -101,6 +101,7 @@ AC_DEFUN([MBEDTLS_VERSION], m4_esyscmd_s(cd "others/mbedtls" && git describe && 
 # SecLang test version
 AC_DEFUN([SECLANG_TEST_VERSION], m4_esyscmd_s(cd "test/test-cases/secrules-language-tests" && git log -1 --format="%h" --abbrev-commit && cd ../../..))
 
+
 # Check for yajl
 PROG_YAJL
 
@@ -108,18 +109,25 @@ AM_CONDITIONAL([YAJL_VERSION], [test "$YAJL_VERSION" != ""])
 
 # Check for LibGeoIP
 PROG_GEOIP
+AM_CONDITIONAL([GEOIP_CFLAGS], [test "GEOIP_CFLAGS" != ""])
 
 # Check for MaxMind
 PROG_MAXMIND
+AM_CONDITIONAL([MAXMIND_CFLAGS], [test "MAXMIND_CFLAGS" != ""])
+
 
 # Check for LMDB
 PROG_LMDB
+AM_CONDITIONAL([LMDB_CFLAGS], [test "LMDB_CFLAGS" != ""])
 
 # Check for SSDEEP
 CHECK_SSDEEP
+AM_CONDITIONAL([SSDEEP_CFLAGS], [test "SSDEEP_CFLAGS" != ""])
 
 # Check for LUA
 CHECK_LUA
+AM_CONDITIONAL([LUA_CFLAGS], [test "LUA_CFLAGS" != ""])
+
 
 #
 # Check for curl
@@ -130,28 +138,33 @@ if ! test -z "${CURL_VERSION}"; then
   AC_DEFINE([MSC_WITH_CURL], [1], [Define if libcurl is available])
 fi
 
+
 #
 # Check for LibXML
 #
 CHECK_LIBXML2
 
+
 #
 # Check for pcre2
 #
-if test "x${with_pcre}" = "x" || test "x${with_pcre}" = "xno"; then
+if test "x${with_pcre}" = "x" -o "x${with_pcre}" = "xno"; then
     PCRE2_MANDATORY=yes
     PROG_PCRE2
-elif test "x$PCRE2_FOUND" != "x1" || test "x${with_pcre2}" = "x" || test "x${with_pcre2}" = "xno"; then
+elif test "x$PCRE2_FOUND" != "x1" -o "x${with_pcre2}" = "x" -o "x${with_pcre2}" = "xno"; then
 #
 # Check for libpcre
 #
     CHECK_PCRE
 fi
+AM_CONDITIONAL([PCRE2_CFLAGS], [test "PCRE2_CFLAGS" != ""])
+
 
 # Checks for header files.
 AC_CHECK_HEADERS([string])
 AC_CHECK_HEADERS([iostream])
 AC_CHECK_HEADERS([sys/utsname.h])
+
 
 # Initialize libtool
 LT_INIT
