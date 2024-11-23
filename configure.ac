@@ -109,24 +109,19 @@ AM_CONDITIONAL([YAJL_VERSION], [test "$YAJL_VERSION" != ""])
 
 # Check for LibGeoIP
 PROG_GEOIP
-AM_CONDITIONAL([GEOIP_CFLAGS], [test "GEOIP_CFLAGS" != ""])
 
 # Check for MaxMind
 PROG_MAXMIND
-AM_CONDITIONAL([MAXMIND_CFLAGS], [test "MAXMIND_CFLAGS" != ""])
 
 
 # Check for LMDB
 PROG_LMDB
-AM_CONDITIONAL([LMDB_CFLAGS], [test "LMDB_CFLAGS" != ""])
 
 # Check for SSDEEP
 CHECK_SSDEEP
-AM_CONDITIONAL([SSDEEP_CFLAGS], [test "SSDEEP_CFLAGS" != ""])
 
 # Check for LUA
 CHECK_LUA
-AM_CONDITIONAL([LUA_CFLAGS], [test "LUA_CFLAGS" != ""])
 
 
 #
@@ -155,7 +150,6 @@ CHECK_PCRE
 # Check for pcre2
 #
 PROG_PCRE2
-AM_CONDITIONAL([PCRE2_CFLAGS], [test "PCRE2_CFLAGS" != ""])
 
 
 # Checks for header files.
