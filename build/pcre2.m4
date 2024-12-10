@@ -29,10 +29,12 @@ if test "x${with_pcre2}" == "xno"; then
     AC_MSG_NOTICE([Support for PCRE2 was disabled by the utilization of --without-pcre2 or --with-pcre2=no])
     PCRE2_DISABLED=yes
 else
-    if test "x${with_pcre2}" == "xyes"; then
-        PCRE2_MANDATORY=yes
-        AC_MSG_NOTICE([PCRE2 support was marked as mandatory by the utilization of --with-pcre2=yes])
-    fi
+     # pcre2 is the default
+     PCRE2_MANDATORY=yes
+#    if test "x${with_pcre2}" == "xyes"; then
+#        PCRE2_MANDATORY=yes
+#        AC_MSG_NOTICE([PCRE2 support was marked as mandatory by the utilization of --with-pcre2=yes])
+#    fi
 #        for x in ${PCRE2_POSSIBLE_LIB_NAMES}; do
 #            CHECK_FOR_PCRE2_AT(${x})
 #            if test -n "${PCRE2_VERSION}"; then
@@ -91,16 +93,21 @@ if test -z "${PCRE2_LDADD}"; then
         PCRE2_FOUND=-1
     fi
 else
-    PCRE2_FOUND=1
-    AC_MSG_NOTICE([using PCRE2 v${PCRE2_VERSION}])
-    PCRE2_CFLAGS="${PCRE2_CFLAGS}"
-    PCRE2_DISPLAY="${PCRE2_LDADD}, ${PCRE2_CFLAGS}"
-    AC_SUBST(PCRE2_VERSION)
-    AC_SUBST(PCRE2_LDADD)
-    AC_SUBST(PCRE2_LIBS)
-    AC_SUBST(PCRE2_LDFLAGS)
-    AC_SUBST(PCRE2_CFLAGS)
-    AC_SUBST(PCRE2_DISPLAY)
+    if test -z "${PCRE2_MANDATORY}"; then
+        PCRE2_FOUND=2
+        AC_MSG_NOTICE([PCRE2 is disabled by default.])
+    else
+        PCRE2_FOUND=1
+        AC_MSG_NOTICE([using PCRE2 v${PCRE2_VERSION}])
+        PCRE2_CFLAGS="${PCRE2_CFLAGS}"
+        PCRE2_DISPLAY="${PCRE2_LDADD}, ${PCRE2_CFLAGS}"
+        AC_SUBST(PCRE2_VERSION)
+        AC_SUBST(PCRE2_LDADD)
+        AC_SUBST(PCRE2_LIBS)
+        AC_SUBST(PCRE2_LDFLAGS)
+        AC_SUBST(PCRE2_CFLAGS)
+        AC_SUBST(PCRE2_DISPLAY)
+    fi
 fi
 
 

@@ -105,6 +105,7 @@ jobs:
                        geoip \
                        ssdeep \
                        pcre \
+                       pcre2 \
                        bison \
                        flex
       - uses: actions/checkout@v4
