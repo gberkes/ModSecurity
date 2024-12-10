@@ -141,15 +141,16 @@ CHECK_LIBXML2
 
 
 #
-# Check for libpcre
+# Check for libpcre only if explicitly requested
 #
-CHECK_PCRE
-
-
-#
-# Check for pcre2
-#
-PROG_PCRE2
+if test "x${with_pcre}" != "x" && test "x${with_pcre}" != "xno"; then
+  CHECK_PCRE
+else
+  #
+  # Check for pcre2
+  #
+  PROG_PCRE2
+fi
 
 
 # Checks for header files.

@@ -21,7 +21,7 @@
 
 #include "src/operators/operator.h"
 
-#ifndef WITH_PCRE2
+#ifdef WITH_PCRE
 #if PCRE_HAVE_JIT
 #define pcre_study_opt PCRE_STUDY_JIT_COMPILE
 #else
@@ -34,7 +34,7 @@ namespace modsecurity {
 namespace operators {
 
 VerifyCC::~VerifyCC() {
-#if WITH_PCRE2
+#ifndef WITH_PCRE
     pcre2_code_free(m_pc);
 #else
     if (m_pc != NULL) {
@@ -94,7 +94,7 @@ int VerifyCC::luhnVerify(const char *ccnumber, int len) {
 
 
 bool VerifyCC::init(const std::string &param2, std::string *error) {
-#ifdef WITH_PCRE2
+#ifndef WITH_PCRE
     PCRE2_SPTR pcre2_pattern = reinterpret_cast<PCRE2_SPTR>(m_param.c_str());
     uint32_t pcre2_options = (PCRE2_DOTALL|PCRE2_MULTILINE);
     int errornumber = 0;
@@ -136,7 +136,7 @@ bool VerifyCC::init(const std::string &param2, std::string *error) {
 
 bool VerifyCC::evaluate(Transaction *t, RuleWithActions *rule,
     const std::string& i, RuleMessage &ruleMessage) {
-#ifdef WITH_PCRE2
+#ifndef WITH_PCRE
     PCRE2_SIZE offset = 0;
     size_t target_length = i.length();
     PCRE2_SPTR pcre2_i = reinterpret_cast<PCRE2_SPTR>(i.c_str());
@@ -192,7 +192,7 @@ bool VerifyCC::evaluate(Transaction *t, RuleWithActions *rule,
                         "\" at " + i + ". [offset " +
                         std::to_string(offset) + "]");
                 }
-#ifdef WITH_PCRE2
+#ifndef WITH_PCRE
                 pcre2_match_data_free(match_data);
 #endif
                 return true;
@@ -200,7 +200,7 @@ bool VerifyCC::evaluate(Transaction *t, RuleWithActions *rule,
         }
     }
 
-#ifdef WITH_PCRE2
+#ifndef WITH_PCRE
     pcre2_match_data_free(match_data);
 #endif
 

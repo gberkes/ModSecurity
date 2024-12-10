@@ -23,7 +23,7 @@
 
 #include "src/utils/geo_lookup.h"
 
-#ifndef WITH_PCRE2
+#ifdef WITH_PCRE
 #if PCRE_HAVE_JIT
 // NOTE: Add PCRE_STUDY_EXTRA_NEEDED so studying always yields a pcre_extra strucure
 // and we can selectively override match limits using a copy of that structure at runtime.
@@ -35,7 +35,7 @@
 #endif
 #endif
 
-#ifdef WITH_PCRE2
+#ifndef WITH_PCRE
 class Pcre2MatchContextPtr {
  public:
     Pcre2MatchContextPtr()
@@ -62,7 +62,7 @@ namespace Utils {
 
 // Helper function to tell us if the current config indicates CRLF is a valid newline sequence
 bool crlfIsNewline() {
-#if WITH_PCRE2
+#ifndef WITH_PCRE
     uint32_t newline = 0;
     pcre2_config(PCRE2_CONFIG_NEWLINE, &newline);
     bool crlf_is_newline =
@@ -89,7 +89,7 @@ bool crlfIsNewline() {
 
 Regex::Regex(const std::string& pattern_, bool ignoreCase)
     : pattern(pattern_.empty() ? ".*" : pattern_) {
-#if WITH_PCRE2
+#ifndef WITH_PCRE
     PCRE2_SPTR pcre2_pattern = reinterpret_cast<PCRE2_SPTR>(pattern.c_str());
     uint32_t pcre2_options = (PCRE2_DOTALL|PCRE2_MULTILINE);
     if (ignoreCase) {
@@ -117,7 +117,7 @@ Regex::Regex(const std::string& pattern_, bool ignoreCase)
 
 
 Regex::~Regex() {
-#if WITH_PCRE2
+#ifndef WITH_PCRE
     pcre2_code_free(m_pc);
 #else
     if (m_pc != NULL) {
@@ -139,7 +139,7 @@ Regex::~Regex() {
 std::list<SMatch> Regex::searchAll(const std::string& s) const {
     std::list<SMatch> retList;
     int rc = 0;
-#ifdef WITH_PCRE2
+#ifndef WITH_PCRE
     PCRE2_SPTR pcre2_s = reinterpret_cast<PCRE2_SPTR>(s.c_str());
     PCRE2_SIZE offset = 0;
 
@@ -183,14 +183,14 @@ std::list<SMatch> Regex::searchAll(const std::string& s) const {
         }
     } while (rc > 0);
 
-#ifdef WITH_PCRE2
+#ifndef WITH_PCRE
     pcre2_match_data_free(match_data);
 #endif
     return retList;
 }
 
 RegexResult Regex::searchOneMatch(const std::string& s, std::vector<SMatchCapture>& captures, unsigned long match_limit) const {
-#ifdef WITH_PCRE2
+#ifndef WITH_PCRE
     Pcre2MatchContextPtr match_context;
     if (match_limit > 0) {
         // TODO: What if setting the match limit fails?
@@ -235,7 +235,7 @@ RegexResult Regex::searchOneMatch(const std::string& s, std::vector<SMatchCaptur
         captures.push_back(capture);
     }
 
-#ifdef WITH_PCRE2
+#ifndef WITH_PCRE
     pcre2_match_data_free(match_data);
 #endif
     return to_regex_result(rc);
@@ -243,7 +243,7 @@ RegexResult Regex::searchOneMatch(const std::string& s, std::vector<SMatchCaptur
 
 RegexResult Regex::searchGlobal(const std::string& s, std::vector<SMatchCapture>& captures, unsigned long match_limit) const {
     bool prev_match_zero_length = false;
-#ifdef WITH_PCRE2
+#ifndef WITH_PCRE
     Pcre2MatchContextPtr match_context;
     if (match_limit > 0) {
         // TODO: What if setting the match limit fails?
@@ -337,14 +337,14 @@ RegexResult Regex::searchGlobal(const std::string& s, std::vector<SMatchCapture>
         }
     }
 
-#ifdef WITH_PCRE2
+#ifndef WITH_PCRE
     pcre2_match_data_free(match_data);
 #endif
     return RegexResult::Ok;
 }
 
 int Regex::search(const std::string& s, SMatch *match) const {
-#ifdef WITH_PCRE2
+#ifndef WITH_PCRE
     PCRE2_SPTR pcre2_s = reinterpret_cast<PCRE2_SPTR>(s.c_str());
     pcre2_match_data *match_data = pcre2_match_data_create_from_pattern(m_pc, NULL);
     int ret = 0;
@@ -371,14 +371,14 @@ int Regex::search(const std::string& s, SMatch *match) const {
             0);
     }
 
-#ifdef WITH_PCRE2
+#ifndef WITH_PCRE
     pcre2_match_data_free(match_data);
 #endif
     return ret;
 }
 
 int Regex::search(const std::string& s) const {
-#ifdef WITH_PCRE2
+#ifndef WITH_PCRE
     PCRE2_SPTR pcre2_s = reinterpret_cast<PCRE2_SPTR>(s.c_str());
     pcre2_match_data *match_data = pcre2_match_data_create_from_pattern(m_pc, NULL);
     int rc = 0;
@@ -405,7 +405,7 @@ int Regex::search(const std::string& s) const {
 RegexResult Regex::to_regex_result(int pcre_exec_result) const {
     if (
         pcre_exec_result > 0 ||
-#ifdef WITH_PCRE2
+#ifndef WITH_PCRE
         pcre_exec_result == PCRE2_ERROR_NOMATCH
 #else
         pcre_exec_result == PCRE_ERROR_NOMATCH
@@ -413,7 +413,7 @@ RegexResult Regex::to_regex_result(int pcre_exec_result) const {
     ) {
         return RegexResult::Ok;
     } else if(
-#ifdef WITH_PCRE2
+#ifndef WITH_PCRE
         pcre_exec_result == PCRE2_ERROR_MATCHLIMIT
 #else
         pcre_exec_result == PCRE_ERROR_MATCHLIMIT
