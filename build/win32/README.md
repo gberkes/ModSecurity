@@ -22,9 +22,6 @@ The Windows build of libModSecurity uses Build Tools for Visual Studio 2022 (for
     * Install and then setup the default Conan profile to use the MSVC C++ compiler:
       1. Open a command-prompt and set the MSVC C++ compiler environment by executing: `C:\BuildTools\VC\Auxiliary\Build\vcvars64.bat`
       2. Execute: `conan profile detect --force`
-      3. Make sure you are using latest conan center:
-        `conan remote list`
-        `conan remote update conan-center https://center.conan.io`
  * [Git for Windows 2.44.0](https://github.com/git-for-windows/git/releases/download/v2.44.0.windows.1/Git-2.44.0-64-bit.exe)
     * To clone the libModSecurity repository.
     * NOTE: Make sure to initialize and update submodules (to get `libinjection` and regression tests)
