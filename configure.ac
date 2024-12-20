@@ -582,6 +582,17 @@ if test "x$LUA_FOUND" = "x2"; then
     echo "   + LUA                                           ....disabled"
 fi
 
+##PCRE
+if test "x${with_pcre}" != "x" \
+   && test "x${with_pcre}" != "xno" \
+   && test "x${PCRE_VERSION}" == "x"; then
+    AC_MSG_NOTICE([*** pcre library not found.])
+else
+    echo "   + PCRE                                          ....found "
+    echo "     using pcre v${PCRE_VERSION}"
+    echo "      ${PCRE_LDADD}, ${PCRE_CFLAGS}"
+fi
+
 
 ## PCRE2
 if test "x$PCRE2_FOUND" = "x0"; then
