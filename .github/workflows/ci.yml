@@ -112,7 +112,10 @@ jobs:
           fetch-depth: 0
       - name: Build GeoIP
         run: |
-          git clone --depth 1 https://github.com/maxmind/geoip-api-c.git
+          git clone --depth 1 --no-checkout https://github.com/maxmind/geoip-api-c.git
+          git fetch --tags
+          # Check out the last release, v1.6.12
+          git checkout 4b526e7331ca1d692b74a0509ddcc725622ed31a
           cd geoip-api-c
           autoreconf --install
           ./configure --disable-dependency-tracking --disable-silent-rules --prefix=/opt/homebrew
