@@ -38,7 +38,7 @@ bool ValidateByteRange::getRange(const std::string &rangeRepresentation,
             return false;
         }
         if ((start < 0) || (start > 255)) {
-            error->assign("Invalid range start value: " +
+            error->assign("Invalid byte value: " +
                 std::to_string(start));
             return false;
         }
@@ -65,6 +65,11 @@ bool ValidateByteRange::getRange(const std::string &rangeRepresentation,
         return false;
     }
 
+    if ((start < 0) || (start > 255)) {
+        error->assign("Invalid range start value: " +
+            std::to_string(start));
+        return false;
+    }
     if ((end < 0) || (end > 255)) {
        error->assign("Invalid range end value: " + std::to_string(end));
        return false;
