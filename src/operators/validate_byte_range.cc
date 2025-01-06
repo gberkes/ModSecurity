@@ -37,6 +37,11 @@ bool ValidateByteRange::getRange(const std::string &rangeRepresentation,
                 "' into a number");
             return false;
         }
+        if ((start < 0) || (start > 255)) {
+            error->assign("Invalid range start value: " +
+                std::to_string(start));
+            return false;
+        }
         table[start >> 3] = (table[start >> 3] | (1 << (start & 0x7)));
         return true;
     }
@@ -60,11 +65,6 @@ bool ValidateByteRange::getRange(const std::string &rangeRepresentation,
         return false;
     }
 
-    if ((start < 0) || (start > 255)) {
-        error->assign("Invalid range start value: " +
-            std::to_string(start));
-        return false;
-    }
     if ((end < 0) || (end > 255)) {
        error->assign("Invalid range end value: " + std::to_string(end));
        return false;
@@ -87,21 +87,29 @@ bool ValidateByteRange::getRange(const std::string &rangeRepresentation,
 bool ValidateByteRange::init(const std::string &file,
     std::string *error) {
     size_t pos = m_param.find_first_of(",");
+    bool rc;
 
     if (pos == std::string::npos) {
-        getRange(m_param, error);
+        rc = getRange(m_param, error);
     } else {
-        getRange(std::string(m_param, 0, pos), error);
+        rc = getRange(std::string(m_param, 0, pos), error);
+    }
+
+    if (rc == false) {
+        return false;
     }
 
     while (pos != std::string::npos) {
         size_t next_pos = m_param.find_first_of(",", pos + 1);
 
         if (next_pos == std::string::npos) {
-            getRange(std::string(m_param, pos + 1, m_param.length() -
+            rc = getRange(std::string(m_param, pos + 1, m_param.length() -
                 (pos + 1)), error);
         } else {
-            getRange(std::string(m_param, pos + 1, next_pos - (pos + 1)), error);
+            rc = getRange(std::string(m_param, pos + 1, next_pos - (pos + 1)), error);
+        }
+        if (rc == false) {
+            return false;
         }
         pos = next_pos;
     }
