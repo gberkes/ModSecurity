@@ -27,6 +27,7 @@
 #endif
 
 #include <string>
+#include <iomanip>
 
 #include "modsecurity/rules_set.h"
 #include "src/operators/operator.h"
@@ -43,7 +44,23 @@ std::string Rbl::mapIpToAddress(const std::string &ipStr, Transaction *trans) co
         key = trans->m_rules->m_httpblKey.m_value;
     }
 
-    if (sscanf(ipStr.c_str(), "%d.%d.%d.%d", &h0, &h1, &h2, &h3) != 4) {
+    if (struct in6_addr result; inet_pton(AF_INET6, ipStr.c_str(), &result) == 1) {
+        std::ostringstream oss;
+        for (int i = 15; i >= 0; --i) {
+            uint8_t lowNibble = result.s6_addr[i] & 0x0F;
+            uint8_t highNibble = result.s6_addr[i] >> 4;
+
+            oss << std::hex << static_cast<int>(lowNibble) << '.'
+                << static_cast<int>(highNibble) << '.';
+        }
+        addr = oss.str() + "ipv6." + m_service;
+    } else if (sscanf(ipStr.c_str(), "%d.%d.%d.%d", &h0, &h1, &h2, &h3) == 4) {
+        addr = std::to_string(h3) + "." +
+            std::to_string(h2) + "." +
+            std::to_string(h1) + "." +
+            std::to_string(h0) + "." +
+            m_service;
+    } else {
         ms_dbg_a(trans, 0, std::string("Failed to understand `" + ipStr +
             "' as a valid IP address, assuming domain format input"));
 
@@ -56,18 +73,11 @@ std::string Rbl::mapIpToAddress(const std::string &ipStr, Transaction *trans) co
             "with the operator execution, please set the key using: " \
             "SecHttpBlKey"));
         return addr;
-    }
-
-    addr = std::to_string(h3) + "." +
-        std::to_string(h2) + "." +
-        std::to_string(h1) + "." +
-        std::to_string(h0) + "." +
-        m_service;
+    } 
 
     if (m_demandsPassword) {
         addr = key + "." + addr;
     }
-
     return addr;
 }
 
