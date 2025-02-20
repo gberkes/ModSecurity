@@ -39,11 +39,11 @@ class VerifyCC : public Operator {
     explicit VerifyCC(std::unique_ptr<RunTimeString> param)
         : Operator("VerifyCC", std::move(param)),
 #ifndef WITH_PCRE
-        m_pc(NULL),
+        m_pc(nullptr),
         m_pcje(PCRE2_ERROR_JIT_BADOPTION) { }
 #else
-        m_pc(NULL),
-        m_pce(NULL) { }
+        m_pc(nullptr),
+        m_pce(nullptr) { }
 #endif
     ~VerifyCC() override;
 
